@@ -1,0 +1,11 @@
+{
+	"roomId": 0,
+	"participants": {
+		"name": "name",
+		"userId": "ifSomeoneHasSameName",
+		"position": {
+			"X": 22,
+			"Y": 33
+		}
+	}
+}

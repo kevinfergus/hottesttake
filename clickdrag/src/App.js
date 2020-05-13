@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { db } from './firebase';
@@ -17,7 +17,10 @@ function App() {
 	// 		console.log(error);
 	// 	}
 	// }
-	const [ position, loading, error ] = useObjectVal(db.ref('Postition'));
+	const [ position, loading, error ] = useObjectVal(db.ref('participants/position'));
+	const [ helloPosition, setHelloPosition ] = useState(position);
+	console.log('position from DB', position);
+
 	if (loading) {
 		return <div>Loading</div>;
 	}
@@ -27,12 +30,36 @@ function App() {
 
 	console.log('host', position);
 
+	///we want to set up our drag events and connect those to the database
+	function handleDrag(e, position) {
+		e.preventDefault();
+
+		setHelloPosition(position);
+		console.log(e.target.position);
+	}
+	function handleDragStop(e) {
+		e.preventDefault();
+		console.log('STOP');
+		setHelloPosition((prevState) => {
+			const updatedValues = { position: { X: 1, Y: 1 } };
+			return { ...prevState, ...updatedValues };
+		});
+		///set
+		db.ref('participants').set({ helloPosition });
+
+		// send to firebase
+	}
 	return (
 		<div className="App">
 			<header className="App-header">
-				{/* <Draggable position={this.state.position}>
+				{/* <Draggable position={position} onDrag={(e) => onDrag(e)} onStop={(e) => onStop(e)}>
 					<div className="helloworld">Hello World</div>
 				</Draggable> */}
+				<Draggable position={position} onDrag={(e) => handleDrag(e)} onStop={(e) => handleDragStop(e)}>
+					<div className="helloWorld" name="hello" draggable="false">
+						Hello world
+					</div>
+				</Draggable>
 				<p>
 					Edit <code>src/App.js</code> and save to reload.
 				</p>
