@@ -21,31 +21,29 @@ function App() {
 	const [ helloPosition, setHelloPosition ] = useState(position);
 	console.log('position from DB', position);
 
-	if (loading) {
-		return <div>Loading</div>;
-	}
-	if (error) {
-		return <div>Ooops!</div>;
-	}
-
-	console.log('host', position);
+	// if (loading) {
+	// 	return <div>Loading</div>;
+	// }
+	// if (error) {
+	// 	return <div>Ooops!</div>;
+	// }
 
 	///we want to set up our drag events and connect those to the database
 	function handleDrag(e, position) {
 		e.preventDefault();
-
 		setHelloPosition(position);
-		console.log(e.target.position);
+		console.log(position);
 	}
-	function handleDragStop(e) {
+	function handleDragStop(e, position) {
 		e.preventDefault();
 		console.log('STOP');
-		setHelloPosition((prevState) => {
-			const updatedValues = { position: { X: 1, Y: 1 } };
-			return { ...prevState, ...updatedValues };
-		});
+		console.log('position X', position.x);
+		console.log('position y', position.y);
+
+		const newPosition = { position: { x: position.x, y: position.y } };
+
 		///set
-		db.ref('participants').set({ helloPosition });
+		db.ref('participants').set(newPosition);
 
 		// send to firebase
 	}
@@ -55,7 +53,7 @@ function App() {
 				{/* <Draggable position={position} onDrag={(e) => onDrag(e)} onStop={(e) => onStop(e)}>
 					<div className="helloworld">Hello World</div>
 				</Draggable> */}
-				<Draggable position={position} onDrag={(e) => handleDrag(e)} onStop={(e) => handleDragStop(e)}>
+				<Draggable position={position} onDrag={handleDrag} onStop={handleDragStop}>
 					<div className="helloWorld" name="hello" draggable="false">
 						Hello world
 					</div>
